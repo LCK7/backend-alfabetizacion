@@ -1,27 +1,32 @@
-const axios = require("axios");
+const { createChatCompletion } = require("../services/openai");
 
 exports.chatBot = async (req, res) => {
-  const { message } = req.body;
+  try {
+    const { message, temperature, max_tokens } = req.body;
 
-  const response = await axios.post(
-    "https://api.openai.com/v1/chat/completions",
-    {
-      model: "gpt-4o-mini",
+    if (!message || typeof message !== "string") {
+      return res.status(400).json({ error: "'message' is required and must be a string" });
+    }
+
+    const systemPrompt =
+      "Eres un tutor paciente que enseña tecnología paso a paso a adultos mayores. Responde con instrucciones claras y divididas en pasos cuando sea apropiado, usa lenguaje sencillo y ejemplos prácticos.";
+
+    const payload = {
       messages: [
-        {
-          role: "system",
-          content:
-            "Eres un tutor paciente que enseña tecnología paso a paso a adultos mayores.",
-        },
+        { role: "system", content: systemPrompt },
         { role: "user", content: message },
       ],
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${process.env.OPENAI_KEY}`,
-      },
-    }
-  );
+      temperature: typeof temperature === "number" ? temperature : 0.6,
+      max_tokens: typeof max_tokens === "number" ? max_tokens : 512,
+    };
 
-  res.json(response.data.choices[0].message.content);
+    const result = await createChatCompletion(payload);
+
+    const reply = result?.choices?.[0]?.message?.content || "";
+
+    return res.json({ reply });
+  } catch (err) {
+    console.error("AI chat error:", err?.message || err);
+    return res.status(500).json({ error: "Error processing AI request" });
+  }
 };
