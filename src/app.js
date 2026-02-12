@@ -9,12 +9,10 @@ const aiRoutes = require("./routes/ai");
 
 const app = express();
 
-// Configurar CORS para aceptar la app web desplegada
 const corsOptions = process.env.FRONTEND_URL ? { origin: process.env.FRONTEND_URL } : {};
 app.use(cors(corsOptions));
 app.use(express.json());
 
-// Servir archivos subidos
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api/auth", authRoutes);

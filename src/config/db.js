@@ -1,23 +1,25 @@
 const { Sequelize } = require("sequelize");
 
+const isProduction = process.env.NODE_ENV === "production";
+
 let sequelize;
 
-if (process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL) {
-  // Priorizar DATABASE_URL (internal), si no existe usar DATABASE_PUBLIC_URL (public-facing)
-  const dbUrl = process.env.DATABASE_URL || process.env.DATABASE_PUBLIC_URL;
-  // Usar URL completa (p. ej. proporcionada por Railway)
-  sequelize = new Sequelize(dbUrl, {
+if (process.env.DATABASE_URL) {
+  // Railway / Producción
+  sequelize = new Sequelize(process.env.DATABASE_URL, {
     dialect: "postgres",
-    protocol: "postgres",
     logging: false,
-    dialectOptions: {
-      ssl: process.env.DB_SSL === "true" || process.env.NODE_ENV === "production" ? {
-        require: true,
-        rejectUnauthorized: false,
-      } : false,
-    },
+    dialectOptions: isProduction
+      ? {
+          ssl: {
+            require: true,
+            rejectUnauthorized: false,
+          },
+        }
+      : {},
   });
 } else {
+  // Local
   sequelize = new Sequelize(
     process.env.DB_NAME,
     process.env.DB_USER,
