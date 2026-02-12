@@ -1,36 +1,26 @@
 const { Sequelize } = require("sequelize");
 
-const isProduction = process.env.NODE_ENV === "production";
+const dbUrl = process.env.DATABASE_URL;
 
-let sequelize;
-
-if (process.env.DATABASE_URL) {
-  // Railway / Producción
-  sequelize = new Sequelize(process.env.DATABASE_URL, {
-    dialect: "postgres",
-    logging: false,
-    dialectOptions: isProduction
-      ? {
-          ssl: {
-            require: true,
-            rejectUnauthorized: false,
-          },
-        }
-      : {},
-  });
-} else {
-  // Local
-  sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PASSWORD,
-    {
-      host: process.env.DB_HOST,
-      port: process.env.DB_PORT,
-      dialect: "postgres",
-      logging: false,
-    }
-  );
+if (!dbUrl) {
+  console.error("DATABASE_URL is not set. The application requires a Railway DATABASE_URL to run.");
+  process.exit(1);
 }
+
+const useSSL = process.env.DB_SSL === "true" || process.env.NODE_ENV === "production";
+
+const sequelize = new Sequelize(dbUrl, {
+  dialect: "postgres",
+  protocol: "postgres",
+  logging: false,
+  dialectOptions: useSSL
+    ? {
+        ssl: {
+          require: true,
+          rejectUnauthorized: false,
+        },
+      }
+    : {},
+});
 
 module.exports = { sequelize };
