@@ -2,7 +2,7 @@ const axios = require("axios");
 
 const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
-async function createChatCompletion({ messages, model = "gpt-4o-mini", temperature = 0.7, max_tokens = 800 }) {
+async function createChatCompletion({ messages, model = "gpt-4o-mini", temperature = 0.4, max_tokens = 170 }) {
   if (!process.env.OPENAI_KEY) {
     throw new Error("OPENAI_KEY not configured in environment");
   }
