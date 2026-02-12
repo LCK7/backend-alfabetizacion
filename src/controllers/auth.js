@@ -1,6 +1,6 @@
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const { User } = require("../models");
+const prisma = require("../prisma");
 
 exports.register = async (req, res) => {
   try {
@@ -10,18 +10,14 @@ exports.register = async (req, res) => {
       return res.status(400).json({ msg: "Todos los campos son requeridos" });
     }
 
-    const existingUser = await User.findOne({ where: { email } });
+    const existingUser = await prisma.user.findUnique({ where: { email } });
     if (existingUser) {
       return res.status(400).json({ msg: "El email ya está registrado" });
     }
 
     const hashed = await bcrypt.hash(password, 10);
 
-    const user = await User.create({
-      name,
-      email,
-      password: hashed,
-    });
+    const user = await prisma.user.create({ data: { name, email, password: hashed } });
 
     res.status(201).json({
       msg: "Usuario registrado exitosamente",
@@ -36,7 +32,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ where: { email } });
+    const user = await prisma.user.findUnique({ where: { email } });
     if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
 
     const valid = await bcrypt.compare(password, user.password);
@@ -65,7 +61,7 @@ exports.login = async (req, res) => {
 exports.getUser = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = await User.findByPk(id);
+    const user = await prisma.user.findUnique({ where: { id: Number(id) } });
     if (!user) return res.status(404).json({ msg: "Usuario no encontrado" });
     res.json(user);
   } catch (error) {

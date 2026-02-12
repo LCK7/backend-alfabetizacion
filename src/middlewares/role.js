@@ -1,4 +1,4 @@
-const { User } = require("../models");
+const prisma = require("../prisma");
 
 module.exports = (requiredRole) => {
   return async (req, res, next) => {
@@ -7,7 +7,7 @@ module.exports = (requiredRole) => {
     }
 
     try {
-      const dbUser = await User.findByPk(req.user.id);
+      const dbUser = await prisma.user.findUnique({ where: { id: req.user.id } });
       if (!dbUser) return res.status(404).json({ msg: "Usuario no encontrado" });
 
       if (dbUser.role !== requiredRole) {
