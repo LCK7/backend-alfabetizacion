@@ -1,11 +1,11 @@
+// controllers/ai.js
 const { createChatCompletion } = require("../services/openai");
 
+// Para llevar el conteo de mensajes por IP
 const userUsage = new Map();
-const DAILY_LIMIT = 30;
 
-setInterval(() => {
-  userUsage.clear();
-}, 24 * 60 * 60 * 1000);
+// Límite diario, puedes cambiarlo
+const DAILY_LIMIT = 100;
 
 exports.chatBot = async (req, res) => {
   try {
@@ -16,7 +16,7 @@ exports.chatBot = async (req, res) => {
       return res.json({
         reply: "Has alcanzado el límite diario de mensajes. Intenta mañana."
       });
-    } 
+    }
 
     userUsage.set(ip, used + 1);
 
@@ -54,7 +54,7 @@ exports.chatBot = async (req, res) => {
       model: "gpt-4.1-mini"
     });
 
-    const reply = result?.choices?.[0]?.message?.content || "";
+    const reply = result?.output?.[0]?.content?.[0]?.text || "No se pudo generar respuesta.";
 
     return res.json({ reply });
 
