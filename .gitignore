@@ -12,7 +12,7 @@ pnpm-lock.yaml
 # IDE & Editor
 .vscode
 .idea
-.idea/
+.idea/git
 *.sublime-workspace
 *.swp
 *.swo

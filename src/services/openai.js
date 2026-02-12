@@ -1,8 +1,13 @@
 const axios = require("axios");
 
-const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
+const OPENAI_URL = "https://api.openai.com/v1/responses";
 
-async function createChatCompletion({ messages, model = "gpt-4o-mini", temperature = 0.4, max_tokens = 170 }) {
+async function createChatCompletion({
+  messages,
+  model = "gpt-4.1-mini",
+  temperature = 0.4,
+  max_tokens = 200,
+}) {
   if (!process.env.OPENAI_KEY) {
     throw new Error("OPENAI_KEY not configured in environment");
   }
@@ -11,16 +16,16 @@ async function createChatCompletion({ messages, model = "gpt-4o-mini", temperatu
     OPENAI_URL,
     {
       model,
-      messages,
+      input: messages,
       temperature,
-      max_tokens,
+      max_output_tokens: max_tokens,
     },
     {
       headers: {
         Authorization: `Bearer ${process.env.OPENAI_KEY}`,
         "Content-Type": "application/json",
       },
-      timeout: 30_000,
+      timeout: 30000,
     }
   );
 

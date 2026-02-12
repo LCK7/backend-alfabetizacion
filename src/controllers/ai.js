@@ -16,7 +16,7 @@ exports.chatBot = async (req, res) => {
       return res.json({
         reply: "Has alcanzado el límite diario de mensajes. Intenta mañana."
       });
-    }
+    } 
 
     userUsage.set(ip, used + 1);
 
