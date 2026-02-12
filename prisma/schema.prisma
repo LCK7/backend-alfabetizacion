@@ -16,6 +16,9 @@ model User {
   progresses Progress[]
   examResults ExamResult[]
   createdAt DateTime     @default(now())
+  // optional relation to a Lesson (an exam can be attached to a specific lesson)
+  lesson        Lesson?      @relation(fields: [lessonId], references: [id])
+  lessonId      Int?
   updatedAt DateTime     @updatedAt
 }
 

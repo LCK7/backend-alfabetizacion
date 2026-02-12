@@ -6,6 +6,7 @@ const courseRoutes = require("./routes/course");
 const lessonRoutes = require("./routes/lesson");
 const progressRoutes = require("./routes/progress");
 const aiRoutes = require("./routes/ai");
+const examRoutes = require("./routes/exam");
 
 const app = express();
 
@@ -20,6 +21,7 @@ app.use("/api/courses", courseRoutes);
 app.use("/api/lessons", lessonRoutes);
 app.use("/api/progress", progressRoutes);
 app.use("/api/ai", aiRoutes);
+app.use("/api/exams", examRoutes);
 
 // Rutas para uploads (se agrega dinámicamente si existe)
 const uploadsRouter = require("./routes/uploads");
