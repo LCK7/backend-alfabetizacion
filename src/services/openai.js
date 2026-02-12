@@ -8,8 +8,8 @@ async function createChatCompletion({
   temperature = 0.4,
   max_tokens = 200,
 }) {
-  if (!process.env.OPENAI_KEY) {
-    throw new Error("OPENAI_KEY not configured in environment");
+  if (!process.env.OPENAI_API_KEY) {
+    throw new Error("OPENAI_API_KEY not configured in environment");
   }
 
   const resp = await axios.post(
@@ -22,7 +22,7 @@ async function createChatCompletion({
     },
     {
       headers: {
-        Authorization: `Bearer ${process.env.OPENAI_KEY}`,
+        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
         "Content-Type": "application/json",
       },
       timeout: 30000,
