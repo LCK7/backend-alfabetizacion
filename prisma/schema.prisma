@@ -8,18 +8,15 @@ datasource db {
 }
 
 model User {
-  id        Int          @id @default(autoincrement())
-  name      String
-  email     String       @unique
-  password  String
-  role      String       @default("student")
-  progresses Progress[]
+  id          Int          @id @default(autoincrement())
+  name        String
+  email       String       @unique
+  password    String
+  role        String       @default("student")
+  progresses  Progress[]
   examResults ExamResult[]
-  createdAt DateTime     @default(now())
-  // optional relation to a Lesson (an exam can be attached to a specific lesson)
-  lesson        Lesson?      @relation(fields: [lessonId], references: [id])
-  lessonId      Int?
-  updatedAt DateTime     @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
 }
 
 model Course {
@@ -34,50 +31,51 @@ model Course {
 }
 
 model Lesson {
-  id        Int       @id @default(autoincrement())
-  title     String
-  content   String?
-  video_url String?
-  order     Int       @default(1)
-  course    Course    @relation(fields: [courseId], references: [id])
-  courseId  Int
+  id         Int        @id @default(autoincrement())
+  title      String
+  content    String?
+  video_url  String?
+  order      Int        @default(1)
+  course     Course     @relation(fields: [courseId], references: [id])
+  courseId   Int
+  exams      Exam[]
   progresses Progress[]
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Progress {
-  id        Int     @id @default(autoincrement())
-  user      User    @relation(fields: [userId], references: [id])
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  lesson    Lesson  @relation(fields: [lessonId], references: [id])
+  lesson    Lesson   @relation(fields: [lessonId], references: [id])
   lessonId  Int
-  completed Boolean @default(false)
+  completed Boolean  @default(false)
   createdAt DateTime @default(now())
 }
 
 model Exam {
-  id            Int          @id @default(autoincrement())
-  question      String
-  option_a      String?
-  option_b      String?
-  option_c      String?
+  id             Int          @id @default(autoincrement())
+  question       String
+  option_a       String?
+  option_b       String?
+  option_c       String?
   correct_option String?
-  course        Course       @relation(fields: [courseId], references: [id])
-  courseId      Int
-  lesson        Lesson?      @relation(fields: [lessonId], references: [id])
-  lessonId      Int?
-  results       ExamResult[]
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  course         Course       @relation(fields: [courseId], references: [id])
+  courseId       Int
+  lesson         Lesson?      @relation(fields: [lessonId], references: [id])
+  lessonId       Int?
+  results        ExamResult[]
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 }
 
 model ExamResult {
-  id       Int   @id @default(autoincrement())
-  score    Int   @default(0)
-  user     User  @relation(fields: [userId], references: [id])
-  userId   Int
-  exam     Exam  @relation(fields: [examId], references: [id])
-  examId   Int
+  id        Int      @id @default(autoincrement())
+  score     Int      @default(0)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
+  exam      Exam     @relation(fields: [examId], references: [id])
+  examId    Int
   createdAt DateTime @default(now())
 }
