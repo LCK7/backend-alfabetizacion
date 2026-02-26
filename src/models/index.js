@@ -5,7 +5,6 @@ const Progress = require("./Progress");
 const Exam = require("./Exam");
 const ExamResult = require("./ExamResult");
 
-/* Relaciones */
 
 Course.hasMany(Lesson);
 Lesson.belongsTo(Course);
